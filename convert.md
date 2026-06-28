@@ -1,0 +1,1 @@
+python -m PyInstaller --onefile --windowed --icon=wincleaner.ico wincleaner.py

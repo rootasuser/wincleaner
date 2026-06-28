@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#1e2640" />
+    </linearGradient>
+    <!-- File/Data Gradient (Fading out) -->
+    <linearGradient id="fileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <!-- Clean/Success Gradient -->
+    <linearGradient id="cleanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+  </defs>
+
+  <!-- App Icon Base (Squircle) -->
+  <rect x="32" y="32" width="448" height="448" rx="100" fill="url(#bgGrad)" stroke="#2e3c61" stroke-width="4" />
+
+  <!-- Background Glow behind the file -->
+  <circle cx="230" cy="230" r="120" fill="#00d2ff" opacity="0.05" filter="blur(20px)" />
+
+  <!-- Group: The Unused File (Angled/Slanted to show action) -->
+  <g transform="translate(20, -10) rotate(-5 256 256)">
+    <!-- Main Document Sheet -->
+    <path d="M160,110 L260,110 L320,170 L320,350 C320,366 306,380 290,380 L160,380 C144,380 130,366 130,350 L130,140 C130,124 144,110 160,110 Z" 
+          fill="url(#fileGrad)" opacity="0.85" />
+    
+    <!-- Folded Page Corner -->
+    <path d="M260,110 L260,150 C260,161 269,170 280,170 L320,170 Z" fill="#e0f2fe" />
+
+    <!-- UI/Binary Data Lines on the File (Representing system junk) -->
+    <rect x="160" y="190" width="100" height="12" rx="6" fill="#0c4a6e" opacity="0.6" />
+    <rect x="160" y="220" width="130" height="12" rx="6" fill="#0c4a6e" opacity="0.6" />
+    <rect x="160" y="250" width="70" height="12" rx="6" fill="#0c4a6e" opacity="0.6" />
+    
+    <!-- Binary '0' and '1' bits dissolving/breaking off -->
+    <text x="165" y="310" font-family="monospace" font-weight="bold" font-size="28" fill="#7dd3fc" opacity="0.7">0</text>
+    <text x="210" y="315" font-family="monospace" font-weight="bold" font-size="24" fill="#7dd3fc" opacity="0.4">1</text>
+    <text x="250" y="300" font-family="monospace" font-weight="bold" font-size="26" fill="#7dd3fc" opacity="0.6">0</text>
+  </g>
+
+  <!-- Dynamic Broom Sweeping the File Away -->
+  <g transform="translate(40, 20)">
+    <!-- Fast Motion Swoosh Line under the broom -->
+    <path d="M120,340 C220,340 320,290 360,200" fill="none" stroke="url(#cleanGrad)" stroke-width="24" stroke-linecap="round" />
+    <path d="M160,370 C240,370 310,330 340,260" fill="none" stroke="#4ade80" stroke-width="10" stroke-linecap="round" opacity="0.6" />
+
+    <!-- Broom Handle -->
+    <path d="M300,130 L230,220" fill="none" stroke="#f1f5f9" stroke-width="16" stroke-linecap="round" />
+    
+    <!-- Broom Head / Bristles cleaning the surface -->
+    <path d="M200,210 L260,260" fill="none" stroke="#22c55e" stroke-width="28" stroke-linecap="round" />
+    <path d="M190,220 L210,270 M210,200 L240,250 M230,190 L260,240" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+  </g>
+
+  <!-- Sparkles / Deleted File Particles (Signifying successful cleanup) -->
+  <!-- Sparkle 1 -->
+  <path d="M370,120 L374,105 L378,120 L393,124 L378,128 L374,143 L370,128 L355,124 Z" fill="#4ade80" />
+  <!-- Sparkle 2 -->
+  <path d="M100,220 L102,210 L104,220 L114,222 L104,224 L102,234 L100,224 L90,222 Z" fill="#ffffff" />
+  <!-- Floating Deleted Pixel Blocks -->
+  <rect x="110" y="140" width="14" height="14" rx="4" fill="#38bdf8" opacity="0.7" transform="rotate(15 110 140)" />
+  <rect x="380, " y="280" width="12" height="12" rx="3" fill="#4ade80" opacity="0.8" transform="rotate(45 380 280)" />
+  <rect x="340" y="340" width="16" height="16" rx="4" fill="#38bdf8" opacity="0.4" transform="rotate(30 340 340)" />
+</svg>
