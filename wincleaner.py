@@ -124,7 +124,7 @@ tk.Label(
 # ── Website link ──────────────────────────────────────────────────────────────
 site_link = tk.Label(
     footer_inner,
-    text="🌐  windelnavales.com",
+    text="🌐  https://wincleaner-web.vercel.app/",
     font=("Segoe UI", 8, "bold"),
     bg=FOOTER_BG,
     fg=ACCENT,
