@@ -5,6 +5,7 @@ Author: Windel Navales
 
 import os
 import tkinter as tk
+import webbrowser
 
 from ui_components import (
     BG, CARD, BORDER, HEADER_BG, FOOTER_BG,
@@ -16,6 +17,7 @@ from recycle_bin    import empty_recycle_bin
 from temp_cleaner   import clear_temp
 from recent_cleaner import clear_recent
 from duplicate_finder import open_duplicate_finder
+from thumbnail_cache_cleaner import clear_thumbnail_cache
 
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
@@ -25,7 +27,6 @@ ICO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wincleaner.
 # ── Build window ───────────────────────────────────────────────────────────────
 root = tk.Tk()
 root.title("WinCleaner")
-root.geometry("480x420")
 root.resizable(False, False)
 root.configure(bg=BG)
 
@@ -77,6 +78,11 @@ buttons_data = [
              RED,     RED_H,
              lambda: empty_recycle_bin(parent=root)),
 
+    ("🖼",  "Clear Thumbnail Cache",
+            "Removes cached thumbnails to free up space",
+            "#7B58EE", "#6A5ACD",
+            lambda: clear_thumbnail_cache(parent=root)),
+
     ("🔍",  "Find Duplicate Files",
              "Detect & remove identical files in any folder",
              ORANGE,  ORANGE_H,
@@ -101,7 +107,7 @@ footer_inner.pack(fill="x", padx=16, pady=10)
 
 tk.Label(
     footer_inner,
-    text="Windows System Cleaner  •  v1.2",
+    text="Windows System Cleaner  •  v1.3",
     font=("Segoe UI", 8, "bold"),
     bg=FOOTER_BG,
     fg=TEXT_DARK
@@ -114,6 +120,21 @@ tk.Label(
     bg=FOOTER_BG,
     fg=TEXT_MUTED
 ).pack(side="left", padx=(8, 0))
+
+# ── Website link ──────────────────────────────────────────────────────────────
+site_link = tk.Label(
+    footer_inner,
+    text="🌐  windelnavales.com",
+    font=("Segoe UI", 8, "bold"),
+    bg=FOOTER_BG,
+    fg=ACCENT,
+    cursor="hand2"
+)
+site_link.pack(side="left", padx=(8, 0))
+site_link.bind("<Enter>", lambda e: site_link.config(fg=ACCENT_H))
+site_link.bind("<Leave>", lambda e: site_link.config(fg=ACCENT))
+site_link.bind("<Button-1>", lambda e: webbrowser.open("https://windelnavales.com"))
+# ───────────────────────────────────────────────────────────────────────────────
 
 close_btn = tk.Label(
     footer_inner,
@@ -142,6 +163,24 @@ for icon, text in info_items:
     pill.pack(side="left", padx=(0, 8))
     tk.Label(pill, text=f"{icon}  {text}", font=("Segoe UI", 8),
              bg="#E1ECFF", fg="#1A4FA0").pack()
+
+
+# ── Final auto-sizing & centering ──────────────────────────────────────────────
+root.update_idletasks()
+
+MIN_W = 480
+MIN_H = 420
+
+w = max(root.winfo_reqwidth(), MIN_W)
+h = max(root.winfo_reqheight(), MIN_H)
+
+sw = root.winfo_screenwidth()
+sh = root.winfo_screenheight()
+x = (sw - w) // 2
+y = (sh - h) // 2
+
+root.geometry(f"{w}x{h}+{x}+{y}")
+root.minsize(MIN_W, MIN_H)
 
 
 # ── Launch ─────────────────────────────────────────────────────────────────────
