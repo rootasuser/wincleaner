@@ -133,7 +133,7 @@ site_link = tk.Label(
 site_link.pack(side="left", padx=(8, 0))
 site_link.bind("<Enter>", lambda e: site_link.config(fg=ACCENT_H))
 site_link.bind("<Leave>", lambda e: site_link.config(fg=ACCENT))
-site_link.bind("<Button-1>", lambda e: webbrowser.open("https://windelnavales.com"))
+site_link.bind("<Button-1>", lambda e: webbrowser.open("https://wincleaner-web.vercel.app"))
 # ───────────────────────────────────────────────────────────────────────────────
 
 close_btn = tk.Label(
