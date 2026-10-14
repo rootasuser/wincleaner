@@ -1,4 +1,4 @@
-('D:\\wincleaner\\build\\wincleaner\\PYZ-00.pyz',
+('D:\\wincleaner\\build\\WinCleaner\\PYZ-00.pyz',
  [('__future__',
    'C:\\Users\\winde\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\__future__.py',
    'PYMODULE'),
@@ -415,6 +415,7 @@
    'C:\\Users\\winde\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\typing.py',
    'PYMODULE'),
   ('ui_components', 'D:\\wincleaner\\ui_components.py', 'PYMODULE'),
+  ('updater', 'D:\\wincleaner\\updater.py', 'PYMODULE'),
   ('urllib',
    'C:\\Users\\winde\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\urllib\\__init__.py',
    'PYMODULE'),

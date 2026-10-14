@@ -1,6 +1,7 @@
 """
-Windows System Cleaner
+WinCleaner — Windows System Cleaner
 Author: Windel Navales
+Modern blue Tkinter interface.
 """
 
 import os
@@ -8,181 +9,288 @@ import tkinter as tk
 import webbrowser
 
 from ui_components import (
-    BG, CARD, BORDER, HEADER_BG, FOOTER_BG,
     ACCENT, ACCENT_H, GREEN, GREEN_H, RED, RED_H, ORANGE, ORANGE_H,
-    TEXT_LIGHT, TEXT_DARK, TEXT_MUTED,
-    make_button
+    TEXT_LIGHT, TEXT_MUTED, make_button,
 )
-from recycle_bin    import empty_recycle_bin
-from temp_cleaner   import clear_temp
+# Sidebar navigation
+from tkinter import messagebox
+from recycle_bin import empty_recycle_bin
+from temp_cleaner import clear_temp
 from recent_cleaner import clear_recent
 from duplicate_finder import open_duplicate_finder
 from thumbnail_cache_cleaner import clear_thumbnail_cache
+from updater import check_for_updates
 
 
-# ── Paths ──────────────────────────────────────────────────────────────────────
+APP_VERSION = "1.3.0"
+WEBSITE_URL = "https://wincleaner-web.vercel.app/"
 ICO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wincleaner.ico")
 
+# Requested background: RGB(0, 61, 227)
+BLUE = "#003DE3"
+BLUE_DARK = "#002A9E"
+BLUE_DEEP = "#001B66"
+PANEL = "#062B91"
+PANEL_HOVER = "#0A369F"
+PANEL_BORDER = "#1B55D8"
+WHITE = "#FFFFFF"
+MUTED = "#D6E4FF"
+CYAN = "#28C7FF"
+GREEN_ACCENT = "#00D6A0"
+PURPLE = "#8157FF"
+ORANGE_ACCENT = "#FF922E"
+RED_ACCENT = "#FF3658"
 
-# ── Build window ───────────────────────────────────────────────────────────────
 root = tk.Tk()
-root.title("WinCleaner")
+root.title(f"WinCleaner v{APP_VERSION}")
+root.configure(bg=BLUE)
 root.resizable(False, False)
-root.configure(bg=BG)
 
 if os.path.exists(ICO_PATH):
     try:
         root.iconbitmap(ICO_PATH)
-    except Exception:
+    except tk.TclError:
         pass
 
+# Outer window frame
+shell = tk.Frame(root, bg=BLUE_DEEP, highlightbackground="#2671FF", highlightthickness=1)
+shell.pack(fill="both", expand=True, padx=10, pady=10)
 
-# ── Section label ──────────────────────────────────────────────────────────────
-section_frame = tk.Frame(root, bg=BG)
-section_frame.pack(fill="x", padx=20, pady=(18, 6))
+# Main layout
+sidebar = tk.Frame(shell, bg=BLUE_DEEP, width=220)
+sidebar.pack(side="left", fill="y")
+sidebar.pack_propagate(False)
+
+main = tk.Frame(shell, bg=BLUE)
+main.pack(side="left", fill="both", expand=True)
+
+# Sidebar brand
+brand = tk.Frame(sidebar, bg=BLUE_DEEP)
+brand.pack(fill="x", padx=20, pady=(24, 26))
 
 tk.Label(
-    section_frame,
-    text="CLEANUP ACTIONS",
-    font=("Segoe UI", 8, "bold"),
-    bg=BG,
-    fg=TEXT_MUTED
-).pack(side="left")
+    brand, text="✦  WinCleaner", font=("Segoe UI", 19, "bold"),
+    bg=BLUE_DEEP, fg=WHITE
+).pack(anchor="w")
+tk.Label(
+    brand, text="CLEAN  •  OPTIMIZE  •  KEEP IT FAST",
+    font=("Segoe UI", 7, "bold"), bg=BLUE_DEEP, fg="#9BCBFF"
+).pack(anchor="w", pady=(7, 0))
 
-tk.Frame(section_frame, bg=BORDER, height=1).pack(
-    side="left", fill="x", expand=True, padx=(10, 0), pady=6
+# Sidebar navigation
+def nav_item(label, icon, command=None, active=False):
+    bg = "#0755D9" if active else BLUE_DEEP
+    fg = WHITE if active else MUTED
+    item = tk.Frame(sidebar, bg=bg, cursor="hand2")
+    item.pack(fill="x", padx=10, pady=4)
+    text = tk.Label(
+        item, text=f"  {icon}    {label}", anchor="w",
+        font=("Segoe UI", 10, "bold" if active else "normal"),
+        bg=bg, fg=fg, padx=8, pady=12, cursor="hand2"
+    )
+    text.pack(fill="x")
+    if command:
+        item.bind("<Button-1>", lambda _e: command())
+        text.bind("<Button-1>", lambda _e: command())
+    return item
+
+
+
+
+nav_item("Home", "⌂", active=True)
+
+nav_item(
+    "Settings",
+    "⚙",
+    command=lambda: messagebox.showinfo(
+        "Settings",
+        "Settings will be available in a future version.",
+        parent=root,
+    ),
 )
 
+nav_item(
+    "About",
+    "ⓘ",
+    command=lambda: messagebox.showinfo(
+        "About WinCleaner",
+        f"Windows System Cleaner\n"
+        f"Version: {APP_VERSION}\n"
+        "Developer: Windel Navales",
+        parent=root,
+    ),
+)
 
-# ── Card container ─────────────────────────────────────────────────────────────
-card_outer = tk.Frame(root, bg=BG, padx=20)
-card_outer.pack(fill="x")
+nav_item(
+    "Website",
+    "◎",
+    command=lambda: webbrowser.open(WEBSITE_URL),
+)
 
-card = tk.Frame(card_outer, bg=CARD, relief="flat",
-                highlightbackground=BORDER, highlightthickness=1)
-card.pack(fill="x")
+spacer = tk.Frame(sidebar, bg=BLUE_DEEP)
+spacer.pack(fill="both", expand=True)
 
-buttons_data = [
-    ("🗑",  "Clear Temporary Files",
-             "Removes junk from %TEMP%",
-             ACCENT,  ACCENT_H,
-             lambda: clear_temp(parent=root)),
+tk.Label(
+    sidebar, text="▰  Windows", font=("Segoe UI", 13, "bold"),
+    bg=BLUE_DEEP, fg="#35A8FF"
+).pack(anchor="w", padx=22, pady=(0, 4))
+tk.Label(
+    sidebar, text="A Cleaner PC\nA Faster You",
+    font=("Segoe UI", 10), bg=BLUE_DEEP, fg="#9BCBFF",
+    justify="left"
+).pack(anchor="w", padx=22, pady=(0, 22))
 
-    ("📄",  "Clear Recent Items",
-             "Cleans Recent files list",
-             GREEN,   GREEN_H,
-             lambda: clear_recent(parent=root)),
+# Main header
+header = tk.Frame(main, bg=BLUE)
+header.pack(fill="x", padx=26, pady=(24, 18))
 
-    ("♻",  "Empty Recycle Bin",
-             "Permanently deletes recycled files",
-             RED,     RED_H,
-             lambda: empty_recycle_bin(parent=root)),
+header_text = tk.Frame(header, bg=BLUE)
+header_text.pack(side="left", fill="x", expand=True)
 
-    ("🖼",  "Clear Thumbnail Cache",
-            "Removes cached thumbnails to free up space",
-            "#7B58EE", "#6A5ACD",
-            lambda: clear_thumbnail_cache(parent=root)),
+tk.Label(
+    header_text, text="Welcome to WinCleaner",
+    font=("Segoe UI", 23, "bold"), bg=BLUE, fg=WHITE
+).pack(anchor="w")
+tk.Label(
+    header_text,
+    text="Keep your Windows system clean, organized and running at its best.",
+    font=("Segoe UI", 10), bg=BLUE, fg=MUTED
+).pack(anchor="w", pady=(5, 0))
 
-    ("🔍",  "Find Duplicate Files",
-             "Detect & remove identical files in any folder",
-             ORANGE,  ORANGE_H,
-             lambda: open_duplicate_finder(root)),
+version_box = tk.Frame(
+    header, bg=BLUE_DEEP, highlightbackground=PANEL_BORDER, highlightthickness=1
+)
+version_box.pack(side="right", padx=(14, 0), ipadx=14, ipady=10)
+tk.Label(
+    version_box, text=f"Version  {APP_VERSION}",
+    font=("Segoe UI", 10, "bold"), bg=BLUE_DEEP, fg=WHITE
+).pack(anchor="w", padx=2)
+tk.Label(
+    version_box, text="●  Update check enabled",
+    font=("Segoe UI", 8), bg=BLUE_DEEP, fg=GREEN_ACCENT
+).pack(anchor="w", padx=2, pady=(4, 0))
+
+# Section heading
+section = tk.Frame(main, bg=BLUE)
+section.pack(fill="x", padx=28, pady=(0, 12))
+tk.Label(
+    section, text="✦   CLEANUP ACTIONS",
+    font=("Segoe UI", 10, "bold"), bg=BLUE, fg=WHITE
+).pack(side="left")
+tk.Frame(section, bg="#2A69F0", height=1).pack(
+    side="left", fill="x", expand=True, padx=(14, 0), pady=7
+)
+
+# Action cards; existing handlers are preserved.
+actions = [
+    ("▤", "Clear Temporary Files", "Removes junk from %TEMP%", CYAN,
+     lambda: clear_temp(parent=root)),
+    ("▣", "Clear Recent Items", "Cleans Recent files list", GREEN_ACCENT,
+     lambda: clear_recent(parent=root)),
+    ("♻", "Empty Recycle Bin", "Permanently deletes recycled files", RED_ACCENT,
+     lambda: empty_recycle_bin(parent=root)),
+    ("▧", "Clear Thumbnail Cache", "Removes cached thumbnails to free up space", PURPLE,
+     lambda: clear_thumbnail_cache(parent=root)),
+    ("⌕", "Find Duplicate Files", "Detect and remove identical files in any folder", ORANGE_ACCENT,
+     lambda: open_duplicate_finder(root)),
 ]
 
-for i, (icon, label, sub, col, hov, cmd) in enumerate(buttons_data):
-    btn = make_button(card, icon, label, sub, col, hov, cmd)
-    btn.pack(fill="x")
-    if i < len(buttons_data) - 1:
-        tk.Frame(card, bg=BORDER, height=1).pack(fill="x", padx=12)
+cards = tk.Frame(main, bg=BLUE)
+cards.pack(fill="both", expand=True, padx=26)
 
+for symbol, title, subtitle, color, action in actions:
+    card = tk.Frame(
+        cards, bg=PANEL, highlightbackground=color, highlightthickness=1
+    )
+    card.pack(fill="x", pady=5)
 
-# ── Footer ─────────────────────────────────────────────────────────────────────
-footer = tk.Frame(root, bg=FOOTER_BG)
+    icon_box = tk.Frame(card, bg=color, width=58, height=58)
+    icon_box.pack(side="left", padx=(14, 14), pady=10)
+    icon_box.pack_propagate(False)
+    tk.Label(
+        icon_box, text=symbol, font=("Segoe UI Symbol", 24, "bold"),
+        bg=color, fg=WHITE
+    ).place(relx=0.5, rely=0.5, anchor="center")
+
+    description = tk.Frame(card, bg=PANEL)
+    description.pack(side="left", fill="both", expand=True, pady=10)
+    tk.Label(
+        description, text=title, font=("Segoe UI", 12, "bold"),
+        bg=PANEL, fg=WHITE
+    ).pack(anchor="w")
+    tk.Label(
+        description, text=subtitle, font=("Segoe UI", 9),
+        bg=PANEL, fg=MUTED
+    ).pack(anchor="w", pady=(4, 0))
+
+    button = tk.Button(
+        card, text="Start   →", command=action,
+        font=("Segoe UI", 9, "bold"), bg=color, fg=WHITE,
+        activebackground=color, activeforeground=WHITE,
+        relief="flat", bd=0, cursor="hand2",
+        padx=18, pady=9, highlightthickness=0
+    )
+    button.pack(side="right", padx=14, pady=14)
+    button.bind("<Enter>", lambda e, b=button: b.config(relief="raised"))
+    button.bind("<Leave>", lambda e, b=button: b.config(relief="flat"))
+
+# Status badges
+badges = tk.Frame(main, bg=BLUE)
+badges.pack(fill="x", padx=26, pady=(10, 12))
+
+for icon, label, color in [
+    ("◆", "Safe — no system files touched", CYAN),
+    ("ϟ", "Instant cleanup, no reboot needed", PURPLE),
+]:
+    badge = tk.Frame(badges, bg=BLUE_DEEP, highlightbackground=color, highlightthickness=1)
+    badge.pack(side="left", padx=(0, 8))
+    tk.Label(
+        badge, text=f"{icon}  {label}", font=("Segoe UI", 8, "bold"),
+        bg=BLUE_DEEP, fg=WHITE, padx=10, pady=7
+    ).pack()
+
+# Footer
+footer = tk.Frame(shell, bg="#00154F")
 footer.pack(side="bottom", fill="x")
 
-tk.Frame(footer, bg=BORDER, height=1).pack(fill="x")
-
-footer_inner = tk.Frame(footer, bg=FOOTER_BG)
-footer_inner.pack(fill="x", padx=16, pady=10)
+tk.Label(
+    footer, text=f"Windows System Cleaner   •   v{APP_VERSION}",
+    font=("Segoe UI", 8), bg="#00154F", fg=WHITE
+).pack(side="left", padx=(18, 12), pady=12)
 
 tk.Label(
-    footer_inner,
-    text="Windows System Cleaner  •  v1.3",
-    font=("Segoe UI", 8, "bold"),
-    bg=FOOTER_BG,
-    fg=TEXT_DARK
-).pack(side="left")
+    footer, text="│   Developer: Windel Navales",
+    font=("Segoe UI", 8), bg="#00154F", fg="#9BCBFF"
+).pack(side="left", padx=(0, 12), pady=12)
 
-tk.Label(
-    footer_inner,
-    text="Developer: Windel Navales",
-    font=("Segoe UI", 8),
-    bg=FOOTER_BG,
-    fg=TEXT_MUTED
-).pack(side="left", padx=(8, 0))
-
-# ── Website link ──────────────────────────────────────────────────────────────
-site_link = tk.Label(
-    footer_inner,
-    text="🌐 https://wincleaner-web.vercel.app/",
-    font=("Segoe UI", 8, "bold"),
-    bg=FOOTER_BG,
-    fg=ACCENT,
-    cursor="hand2"
+website = tk.Label(
+    footer, text="◎  wincleaner-web.vercel.app",
+    font=("Segoe UI", 8, "bold"), bg="#00154F", fg=CYAN, cursor="hand2"
 )
-site_link.pack(side="left", padx=(8, 0))
-site_link.bind("<Enter>", lambda e: site_link.config(fg=ACCENT_H))
-site_link.bind("<Leave>", lambda e: site_link.config(fg=ACCENT))
-site_link.bind("<Button-1>", lambda e: webbrowser.open("https://wincleaner-web.vercel.app"))
-# ───────────────────────────────────────────────────────────────────────────────
+website.pack(side="left", padx=4, pady=12)
+website.bind("<Button-1>", lambda _e: webbrowser.open(WEBSITE_URL))
 
-close_btn = tk.Label(
-    footer_inner,
-    text="✕  Close",
-    font=("Segoe UI", 8, "bold"),
-    bg=RED, fg=TEXT_LIGHT,
-    padx=10, pady=4,
-    cursor="hand2"
+close_button = tk.Button(
+    footer, text="✕  Close", command=root.destroy,
+    font=("Segoe UI", 9, "bold"), bg=RED_ACCENT, fg=WHITE,
+    activebackground="#D91F43", activeforeground=WHITE,
+    relief="flat", bd=0, cursor="hand2", padx=18, pady=7
 )
-close_btn.pack(side="right")
-close_btn.bind("<Enter>", lambda e: close_btn.config(bg=RED_H))
-close_btn.bind("<Leave>", lambda e: close_btn.config(bg=RED))
-close_btn.bind("<Button-1>", lambda e: root.destroy())
+close_button.pack(side="right", padx=14, pady=7)
 
-
-# ── Status strip ───────────────────────────────────────────────────────────────
-status = tk.Frame(root, bg=BG)
-status.pack(side="bottom", fill="x", padx=16, pady=(0, 10))
-
-info_items = [
-    ("🔒", "Safe — no system files touched"),
-    ("⚡", "Instant cleanup, no reboot needed"),
-]
-for icon, text in info_items:
-    pill = tk.Frame(status, bg="#E1ECFF", padx=10, pady=4)
-    pill.pack(side="left", padx=(0, 8))
-    tk.Label(pill, text=f"{icon}  {text}", font=("Segoe UI", 8),
-             bg="#E1ECFF", fg="#1A4FA0").pack()
-
-
-# ── Final auto-sizing & centering ──────────────────────────────────────────────
+# Size and center window
 root.update_idletasks()
+width = max(root.winfo_reqwidth(), 1000)
+height = max(root.winfo_reqheight(), 700)
+screen_w = root.winfo_screenwidth()
+screen_h = root.winfo_screenheight()
+x = max(0, (screen_w - width) // 2)
+y = max(0, (screen_h - height) // 2)
+root.geometry(f"{width}x{height}+{x}+{y}")
+root.minsize(1000, 700)
 
-MIN_W = 480
-MIN_H = 420
+# Update check: starts after the UI is displayed.
+root.after(1000, lambda: check_for_updates(root))
 
-w = max(root.winfo_reqwidth(), MIN_W)
-h = max(root.winfo_reqheight(), MIN_H)
-
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-x = (sw - w) // 2
-y = (sh - h) // 2
-
-root.geometry(f"{w}x{h}+{x}+{y}")
-root.minsize(MIN_W, MIN_H)
-
-
-# ── Launch ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     root.mainloop()
