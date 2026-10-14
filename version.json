@@ -1,5 +1,5 @@
-
 {
-  "version": "1.4.0",
-  "release_notes": "Redesigned the interface with a professional blue theme and improved usability."
+  "version": "1.5.0",
+  "release_notes": "Added automatic updates: WinCleaner can now download and install new versions by itself.",
+  "sha256": ""
 }
