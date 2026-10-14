@@ -2836,6 +2836,7 @@
   ('unicodedata.pyd',
    'C:\\Users\\winde\\AppData\\Local\\Python\\pythoncore-3.14-64\\DLLs\\unicodedata.pyd',
    'EXTENSION'),
+  ('wincleaner.ico', 'D:\\wincleaner\\wincleaner.ico', 'DATA'),
   ('zlib1.dll',
    'C:\\Users\\winde\\AppData\\Local\\Python\\pythoncore-3.14-64\\DLLs\\zlib1.dll',
    'BINARY')],)

@@ -5,7 +5,7 @@ a = Analysis(
     ['wincleaner.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('D:/wincleaner/wincleaner.ico', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['wincleaner.ico'],
+    icon=['D:/wincleaner/wincleaner.ico'],
 )
 coll = COLLECT(
     exe,
